@@ -215,7 +215,7 @@ object HiveTableDataObject extends FromConfigFactory[DataObject] {
    * @inheritdoc
    */
   override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): HiveTableDataObject = {
-    import configs.syntax.ConfigOps
+    import configs.syntax.RichConfig
     import io.smartdatalake.config._
 
     implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry

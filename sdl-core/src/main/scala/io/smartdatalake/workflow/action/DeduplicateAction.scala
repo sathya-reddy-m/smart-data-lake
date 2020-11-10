@@ -152,7 +152,7 @@ object DeduplicateAction extends FromConfigFactory[Action] {
    * @inheritdoc
    */
   override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): DeduplicateAction = {
-    import configs.syntax.ConfigOps
+    import configs.syntax.RichConfig
     import io.smartdatalake.config._
     implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
     config.extract[DeduplicateAction].value

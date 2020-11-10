@@ -19,7 +19,7 @@
 package io.smartdatalake.config
 
 import com.typesafe.config.ConfigFactory
-import configs.{Configs, Result}
+import configs.{ConfigReader, Result}
 import io.smartdatalake.config.ConfigParser.localSubstitution
 import io.smartdatalake.definitions.{Environment, PartitionDiffMode}
 import io.smartdatalake.workflow.action.{Action, FileTransferAction}
@@ -266,6 +266,8 @@ class ConfigParsingTest extends FlatSpec with Matchers {
   }
 
   "TestDataObject" should "be parsable" in {
+    import configs._
+    import io.smartdatalake.config._
     implicit val registry: InstanceRegistry = new InstanceRegistry()
     val config = ConfigFactory.parseString(
       """
@@ -278,7 +280,7 @@ class ConfigParsingTest extends FlatSpec with Matchers {
         |
         |""".stripMargin).resolve
 
-    val testDataObject = Configs[TestDataObject].get(config, "tdo")
+    val testDataObject = ConfigReader[TestDataObject].read(config, "tdo")
     testDataObject.isSuccess shouldBe true
     testDataObject.value shouldEqual TestDataObject(id = "tdo", arg1 = "first", args = List("one", "two"))
   }
@@ -315,7 +317,7 @@ class ConfigParsingTest extends FlatSpec with Matchers {
 
     implicit val registry: InstanceRegistry = ConfigParser.parse(config)
 
-    val testAction = Configs[TestAction].get(config, "a")
+    val testAction = ConfigReader[TestAction].read(config, "a")
     testAction shouldEqual Result.Success(TestAction(id = "a", arg1 = None, inputId = "tdo1", outputId = "tdo2", executionMode = Some(PartitionDiffMode(partitionColNb = Some(2)))))
   }
 

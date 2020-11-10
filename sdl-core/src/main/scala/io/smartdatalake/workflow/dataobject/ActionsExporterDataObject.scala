@@ -141,7 +141,7 @@ object ActionsExporterDataObject extends FromConfigFactory[ActionsExporterDataOb
    * @inheritdoc
    */
   override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): ActionsExporterDataObject = {
-    import configs.syntax.ConfigOps
+    import configs.syntax.RichConfig
     import io.smartdatalake.config._
 
     implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry

@@ -92,7 +92,7 @@ object XmlFileDataObject extends FromConfigFactory[DataObject] {
    * @inheritdoc
    */
   override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): XmlFileDataObject = {
-    import configs.syntax.ConfigOps
+    import configs.syntax.RichConfig
     import io.smartdatalake.config._
 
     implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry

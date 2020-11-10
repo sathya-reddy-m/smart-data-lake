@@ -65,7 +65,7 @@ object TestAction extends FromConfigFactory[Action] {
    * @inheritdoc
    */
   override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): TestAction = {
-    import configs.syntax.ConfigOps
+    import configs.syntax.RichConfig
     implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
     config.extract[TestAction].value
   }

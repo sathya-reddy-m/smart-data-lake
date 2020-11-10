@@ -98,7 +98,7 @@ case class CustomSparkAction ( override val id: ActionObjectId,
 
 object CustomSparkAction extends FromConfigFactory[Action] {
   override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): CustomSparkAction = {
-    import configs.syntax.ConfigOps
+    import configs.syntax.RichConfig
     import io.smartdatalake.config._
     implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
     config.extract[CustomSparkAction].value

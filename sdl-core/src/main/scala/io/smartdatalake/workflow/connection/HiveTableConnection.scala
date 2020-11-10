@@ -51,7 +51,7 @@ object HiveTableConnection extends FromConfigFactory[Connection] {
    * @inheritdoc
    */
   override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): HiveTableConnection = {
-    import configs.syntax.ConfigOps
+    import configs.syntax.RichConfig
     config.extract[HiveTableConnection].value
   }
 }

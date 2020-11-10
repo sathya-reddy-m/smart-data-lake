@@ -79,10 +79,8 @@ object AvroFileDataObject extends FromConfigFactory[DataObject] {
    * @inheritdoc
    */
   def fromConfig(config: Config, instanceRegistry: InstanceRegistry): AvroFileDataObject = {
-    import configs.syntax.ConfigOps
     import io.smartdatalake.config._
-
     implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[AvroFileDataObject].value
+    extract[AvroFileDataObject](config)
   }
 }

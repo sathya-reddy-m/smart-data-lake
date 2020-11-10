@@ -113,7 +113,7 @@ case class JdbcTableConnection( override val id: ConnectionId,
 
 object JdbcTableConnection extends FromConfigFactory[Connection] {
   override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): JdbcTableConnection = {
-    import configs.syntax.ConfigOps
+    import configs.syntax.RichConfig
     import io.smartdatalake.config._
 
     implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry

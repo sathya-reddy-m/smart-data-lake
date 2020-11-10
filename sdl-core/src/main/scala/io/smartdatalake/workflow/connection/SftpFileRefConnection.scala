@@ -92,11 +92,9 @@ object SftpFileRefConnection extends FromConfigFactory[Connection] {
    * @inheritdoc
    */
   override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): SftpFileRefConnection = {
-    import configs.syntax.ConfigOps
     import io.smartdatalake.config._
-
     implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[SftpFileRefConnection].value
+    extract[SftpFileRefConnection](config)
   }
 }
 

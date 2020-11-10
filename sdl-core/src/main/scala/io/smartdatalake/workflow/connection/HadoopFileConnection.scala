@@ -49,7 +49,7 @@ object HadoopFileConnection extends FromConfigFactory[Connection] {
    * @inheritdoc
    */
   override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): HadoopFileConnection = {
-    import configs.syntax.ConfigOps
+    import configs.syntax.RichConfig
     config.extract[HadoopFileConnection].value
   }
 }

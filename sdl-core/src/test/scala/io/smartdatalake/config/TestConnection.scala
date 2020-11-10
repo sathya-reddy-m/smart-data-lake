@@ -45,7 +45,7 @@ object TestConnection extends FromConfigFactory[Connection] {
    * @inheritdoc
    */
   override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): TestConnection = {
-    import configs.syntax.ConfigOps
+    import configs.syntax.RichConfig
 
     implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
     config.extract[TestConnection].value

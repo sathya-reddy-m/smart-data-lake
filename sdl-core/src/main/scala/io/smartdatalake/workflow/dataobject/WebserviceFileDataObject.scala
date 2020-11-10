@@ -226,7 +226,7 @@ object WebserviceFileDataObject extends FromConfigFactory[DataObject] with Smart
    * @inheritdoc
    */
   override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): WebserviceFileDataObject = {
-    import configs.syntax.ConfigOps
+    import configs.syntax.RichConfig
     import io.smartdatalake.config._
 
     implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry

@@ -60,7 +60,7 @@ case class TestDataObject( id: DataObjectId,
 object TestDataObject extends FromConfigFactory[DataObject] {
 
   override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): TestDataObject = {
-    import configs.syntax.ConfigOps
+    import configs.syntax.RichConfig
 
     implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
     config.extract[TestDataObject].value
