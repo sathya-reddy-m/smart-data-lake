@@ -1,0 +1,983 @@
+{
+  "entityDefs": [
+    {
+      "name": "sdl_WebserviceOptions",
+      "description": "Webservice Options",
+      "superTypes": [
+        "Asset"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "url",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "connectionTimeoutMs",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "authHeader",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "clientIdVariable",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "userVariable",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "mimeType",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_ForeignKey",
+      "description": "Table",
+      "superTypes": [
+        "Asset"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "db",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "table",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "columns",
+          "typeName": "map<string,string>",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "name",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_Table",
+      "description": "Table",
+      "superTypes": [
+        "Asset"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "db",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "name",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "query",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "primaryKey",
+          "typeName": "array<string>",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "foreignKeys",
+          "typeName": "array<sdl_ForeignKey>",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_DataObjectMetadata",
+      "description": "Data Object Metadata",
+      "superTypes": [
+        "Asset"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "name",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "description",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "layer",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "subjectArea",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "tags",
+          "typeName": "array<string>",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_ExcelOptions",
+      "description": "Excel Options",
+      "superTypes": [
+        "Asset"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "sheetName",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "numLinesToSkip",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "startColumn",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "endColumn",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "rowLimit",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "useHeader",
+          "typeName": "boolean",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "treatEmptyValuesAsNulls",
+          "typeName": "boolean",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "inferSchema",
+          "typeName": "boolean",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "timestampFormat",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "dateFormat",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "dateFormat",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "maxRowsInMemory",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "excerptSize",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+
+    {
+      "name": "sdl_DataObject",
+      "description": "Data Object Trait",
+      "superTypes": [
+        "DataSet"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "DataObjectId",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false,
+          "isUnique": true
+        },
+        {
+          "name": "metadata",
+          "typeName": "sdl_DataObjectMetadata",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_TableDataObject",
+      "description": "Table Trait",
+      "superTypes": [
+        "sdl_DataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "table",
+          "typeName": "sdl_Table",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "schemaMin",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_TransactionalSparkTableDataObject",
+      "description": "Transactional Spark Table Trait",
+      "superTypes": [
+        "sdl_TableDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": []
+    },
+    {
+      "name": "sdl_JdbcTableDataObject",
+      "description": "JDBC Table Data Object",
+      "superTypes": [
+        "sdl_TransactionalSparkTableDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "createSql",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "preReadSql",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "postReadSql",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "preWriteSql",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "postWriteSql",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "jdbcFetchSize",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "connectionId",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "jdbcOptions",
+          "typeName": "map<string,string>",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_TickTockHiveTableDataObject",
+      "description": "TickTock Hive Table",
+      "superTypes": [
+        "sdl_TransactionalSparkTableDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "path",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "analyzeTableAfterWrite",
+          "typeName": "boolean",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "dateColumnType",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "numInitialHdfsPartitions",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "saveMode",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "acl",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "connectionId",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_DeltaLakeTableDataObject",
+      "description": "Delta Lake Table",
+      "superTypes": [
+        "sdl_TransactionalSparkTableDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "path",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "dateColumnType",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "numInitialHdfsPartitions",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "saveMode",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "retentionPeriod",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "acl",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "connectionId",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_AccessTableDataObject",
+      "description": "Access Table",
+      "superTypes": [
+        "sdl_TableDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "path",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        }
+      ]
+    },
+    {
+      "name": "sdl_HiveTableDataObject",
+      "description": "Hive Table",
+      "superTypes": [
+        "sdl_TableDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "path",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "analyzeTableAfterWrite",
+          "typeName": "boolean",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "dateColumnType",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "numInitialHdfsPartitions",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "saveMode",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "acl",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "connectionId",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "partitions",
+          "typeName": "array<string>",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_KafkaTopicDataObject",
+      "description": "KafkaTopicDataObject",
+      "superTypes": [
+        "sdl_DataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "topicName",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "connectionId",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "keyType",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "valueType",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "selectCols",
+          "typeName": "map<string,string>",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "datePartitionCol",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "batchReadConsecutiveParitionsAsRanges",
+          "typeName": "boolean",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "batchReadMaxOffsetsPerTask",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "dataSourceOptions",
+          "typeName": "map<string,string>",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_CustomDfDataObject",
+      "description": "Custom DataFrame",
+      "superTypes": [
+        "sdl_DataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "creator",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        }
+      ]
+    },
+    {
+      "name": "sdl_JmsDataObject",
+      "description": "JMS",
+      "superTypes": [
+        "sdl_DataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "jndiContextFactory",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "jndiProviderUrl",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "authMode",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "batchSize",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "maxWaitSec",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "maxBatchAgeSec",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "txBatchSize",
+          "typeName": "int",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "connectionFactory",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "queue",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        }
+      ]
+    },
+    {
+      "name": "sdl_SplunkDataObject",
+      "description": "Splunk",
+      "superTypes": [
+        "sdl_DataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "params",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        },
+        {
+          "name": "connectionId",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        }
+      ]
+    },
+    {
+      "name": "sdl_FileDataObject",
+      "description": "File Trait",
+      "superTypes": [
+        "sdl_DataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "path",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        }
+      ]
+    },
+    {
+      "name": "sdl_FileRefDataObject",
+      "description": "File Ref Trait",
+      "superTypes": [
+        "sdl_FileDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": []
+    },
+    {
+      "name": "sdl_WebserviceFileDataObject",
+      "description": "Webservice File",
+      "superTypes": [
+        "sdl_FileRefDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "webserviceOptions",
+          "typeName": "sdl_WebserviceOptions",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        }
+      ]
+    },
+    {
+      "name": "sdl_SFtpFileRefDataObject",
+      "description": "SFTP File Ref",
+      "superTypes": [
+        "sdl_FileRefDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "connectionId",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false
+        }
+      ]
+    },
+    {
+      "name": "sdl_HadoopFileDataObject",
+      "description": "Hadoop File Trait",
+      "superTypes": [
+        "sdl_FileRefDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": []
+    },
+    {
+      "name": "sdl_SparkFileDataObject",
+      "description": "Spark File Trait",
+      "superTypes": [
+        "sdl_HadoopFileDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": []
+    },
+    {
+      "name": "sdl_XmlFileDataObject",
+      "description": "XML File",
+      "superTypes": [
+        "sdl_SparkFileDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "rowTag",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "xmlOptions",
+          "typeName": "map<string,string>",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "flatten",
+          "typeName": "boolean",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_ExcelFileDataObject",
+      "description": "Excel File",
+      "superTypes": [
+        "sdl_SparkFileDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "excelOptions",
+          "typeName": "sdl_ExcelOptions",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_SparkFileDataObjectWithEmbeddedSchema",
+      "description": "Spark File With Embedded Schema Trait",
+      "superTypes": [
+        "sdl_SparkFileDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": []
+    },
+    {
+      "name": "sdl_AvroFileDataObject",
+      "description": "Avro File",
+      "superTypes": [
+        "sdl_SparkFileDataObjectWithEmbeddedSchema"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+
+      ]
+    },
+    {
+      "name": "sdl_ParquetFileDataObject",
+      "description": "Parquet File",
+      "superTypes": [
+        "sdl_SparkFileDataObjectWithEmbeddedSchema"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+
+      ]
+    },
+    {
+      "name": "sdl_CsvFileDataObject",
+      "description": "CSV File",
+      "superTypes": [
+        "sdl_SparkFileDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "csvOptions",
+          "typeName": "map<string,string>",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "dateColumnType",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_JsonFileDataObject",
+      "description": "JSON File",
+      "superTypes": [
+        "sdl_SparkFileDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "jsonOptions",
+          "typeName": "map<string,string>",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "stringify",
+          "typeName": "boolean",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+    {
+      "name": "sdl_RawFileDataObject",
+      "description": "Raw File",
+      "superTypes": [
+        "sdl_SparkFileDataObject"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": []
+    },
+
+    {
+      "name": "sdl_ActionMetadata",
+      "description": "Action Metadata",
+      "superTypes": [
+        "Asset"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "name",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "description",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "feed",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "tags",
+          "typeName": "array<string>",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    },
+
+    {
+      "name": "sdl_Action",
+      "description": "Action",
+      "superTypes": [
+        "Process"
+      ],
+      "typeVersion": "1.2.0",
+      "attributeDefs": [
+        {
+          "name": "id",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": false,
+          "isUnique": true
+        },
+        {
+          "name": "metadata",
+          "typeName": "sdl_ActionMetadata",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "recursiveInputs",
+          "typeName": "array<sdl_DataObject>",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        },
+        {
+          "name": "metricsFailCondition",
+          "typeName": "string",
+          "cardinality": "SINGLE",
+          "isOptional": true
+        }
+      ]
+    }
+  ]
+}

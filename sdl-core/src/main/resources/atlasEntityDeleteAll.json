@@ -1,0 +1,40 @@
+{
+  "entityDefs": [
+    {"name" : "sdl_WebserviceOptions"},
+    {"name" : "sdl_ForeignKey"},
+    {"name" : "sdl_Table"},
+    {"name" : "sdl_DataObjectMetadata"},
+    {"name" : "sdl_ExcelOptions"},
+
+    {"name" : "sdl_DataObject"},
+    {"name" : "sdl_TableDataObject"},
+    {"name" : "sdl_TransactionalSparkTableDataObject"},
+    {"name" : "sdl_JdbcTableDataObject"},
+    {"name" : "sdl_TickTockHiveTableDataObject"},
+    {"name" : "sdl_DeltaLakeTableDataObject"},
+    {"name" : "sdl_AccessTableDataObject"},
+    {"name" : "sdl_HiveTableDataObject"},
+    {"name" : "sdl_KafkaTopicDataObject"},
+    {"name" : "sdl_CustomDfDataObject"},
+    {"name" : "sdl_JmsDataObject"},
+    {"name" : "sdl_SplunkDataObject"},
+    {"name" : "sdl_FileDataObject"},
+    {"name" : "sdl_FileRefDataObject"},
+    {"name" : "sdl_WebserviceFileDataObject"},
+    {"name" : "sdl_SFtpFileRefDataObject"},
+    {"name" : "sdl_HadoopFileDataObject"},
+    {"name" : "sdl_SparkFileDataObject"},
+    {"name" : "sdl_XmlFileDataObject"},
+    {"name" : "sdl_ExcelFileDataObject"},
+    {"name" : "sdl_SparkFileDataObjectWithEmbeddedSchema"},
+    {"name" : "sdl_AvroFileDataObject"},
+    {"name" : "sdl_ParquetFileDataObject"},
+    {"name" : "sdl_CsvFileDataObject"},
+    {"name" : "sdl_JsonFileDataObject"},
+    {"name" : "sdl_RawFileDataObject"},
+
+    {"name" : "sdl_ActionMetadata"},
+    {"name" : "sdl_Action"}
+  ]
+}
+

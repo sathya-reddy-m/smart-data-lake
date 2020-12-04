@@ -962,6 +962,11 @@
 				<artifactId>jackson-annotations</artifactId>
 				<version>${fasterxml.jackson.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.kjetland</groupId>
+				<artifactId>mbknor-jackson-jsonschema_2.11</artifactId>
+				<version>1.0.39</version>
+			</dependency>
 			<!-- Guava is excluded because of SPARK-6149.  The Guava version referenced in this module is
                  15.0, which causes runtime incompatibility issues. -->
 			<dependency>
