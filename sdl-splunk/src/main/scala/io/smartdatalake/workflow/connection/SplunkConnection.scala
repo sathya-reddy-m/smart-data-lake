@@ -70,9 +70,6 @@ case class SplunkConnection( override val id: ConnectionId,
     connectToSplunk.logout()
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[Connection] = SplunkConnection
 }
 
@@ -81,10 +78,6 @@ trait SplunkConnectionService {
 }
 
 object SplunkConnection extends FromConfigFactory[Connection] {
-
-  /**
-   * @inheritdoc
-   */
   override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): SplunkConnection = {
     import io.smartdatalake.config._
     extract[SplunkConnection](config)

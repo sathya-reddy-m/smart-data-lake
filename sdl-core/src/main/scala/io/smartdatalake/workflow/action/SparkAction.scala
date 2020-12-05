@@ -32,6 +32,7 @@ import io.smartdatalake.workflow.dataobject._
 import io.smartdatalake.workflow.{ActionPipelineContext, ExecutionPhase, SparkSubFeed}
 import org.apache.spark.sql.functions.{col, lit}
 import org.apache.spark.sql.streaming.Trigger
+import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{Column, DataFrame, SparkSession}
 
 private[smartdatalake] abstract class SparkAction extends Action {
@@ -48,6 +49,11 @@ private[smartdatalake] abstract class SparkAction extends Action {
    * This helps to reduce memory needed for caching the DataFrame content and can serve as a recovery point in case an task get's lost.
    */
   def persist: Boolean
+
+  /**
+   * execution mode for this action.
+   */
+  def executionMode: Option[ExecutionMode]
 
   override def prepare(implicit session: SparkSession, context: ActionPipelineContext): Unit = {
     super.prepare
@@ -203,7 +209,7 @@ private[smartdatalake] abstract class SparkAction extends Action {
 
   /**
    * Updates the partition values of a SubFeed to the partition columns of an output, removing not existing columns from the partition values.
-   * Further the transformed DataFrame is validated to have the output's partition columns included.
+   * Further the transformed DataFrame is validated to have the output's partition columns included and partition columns are moved to the end.
    *
    * @param output output DataObject
    * @param subFeed SubFeed with transformed DataFrame
@@ -213,9 +219,11 @@ private[smartdatalake] abstract class SparkAction extends Action {
     val updatedSubFeed = output match {
       case partitionedDO: CanHandlePartitions =>
         // validate output partition columns exist in DataFrame
-        subFeed.dataFrame.foreach(df => validateDataFrameContainsCols(df, partitionedDO.partitions, s"for ${output.id}"))
+        validateDataFrameContainsCols(subFeed.dataFrame.get, partitionedDO.partitions, s"for ${output.id}")
         // adapt subfeed
-        subFeed.updatePartitionValues(partitionedDO.partitions)
+        subFeed
+          .updatePartitionValues(partitionedDO.partitions)
+          .movePartitionColumnsLast(partitionedDO.partitions)
       case _ => subFeed.clearPartitionValues()
     }
     updatedSubFeed.clearDAGStart()
@@ -266,7 +274,7 @@ private[smartdatalake] abstract class SparkAction extends Action {
   /**
    * Applies changes to a SubFeed from a previous action in order to be used as input for this actions transformation.
    */
-  def prepareInputSubFeed(subFeed: SparkSubFeed, input: DataObject with CanCreateDataFrame, ignoreFilters: Boolean = false)(implicit session: SparkSession, context: ActionPipelineContext): SparkSubFeed = {
+  def prepareInputSubFeed(subFeed: SparkSubFeed, input: DataObject with CanCreateDataFrame)(implicit session: SparkSession, context: ActionPipelineContext): SparkSubFeed = {
     // persist if requested
     var preparedSubFeed = if (persist) subFeed.persist else subFeed
     // create dummy DataFrame if read schema is different from write schema on this DataObject
@@ -277,12 +285,11 @@ private[smartdatalake] abstract class SparkAction extends Action {
     preparedSubFeed = if (schemaChanges) preparedSubFeed.convertToDummy(readSchema.get) else preparedSubFeed
     // adapt partition values (#180)
     preparedSubFeed = input match {
-      case _ if ignoreFilters => preparedSubFeed.clearFilter.clearPartitionValues()
       case partitionedInput: CanHandlePartitions => preparedSubFeed.updatePartitionValues(partitionedInput.partitions)
       case _ => preparedSubFeed.clearPartitionValues()
     }
-    // break lineage if requested or if it's a streaming DataFrame or if a filter expression is set or if ignoreFilters
-    preparedSubFeed = if (breakDataFrameLineage || preparedSubFeed.isStreaming.contains(true) || preparedSubFeed.filter.isDefined || ignoreFilters) preparedSubFeed.breakLineage else preparedSubFeed
+    // break lineage if requested or if it's a streaming DataFrame or if a filter expression is set
+    preparedSubFeed = if (breakDataFrameLineage || preparedSubFeed.isStreaming.contains(true) || preparedSubFeed.filter.isDefined) preparedSubFeed.breakLineage else preparedSubFeed
     // return
     preparedSubFeed
   }

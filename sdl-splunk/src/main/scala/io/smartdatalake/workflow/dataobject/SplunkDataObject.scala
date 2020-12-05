@@ -25,12 +25,13 @@ import java.time.{Duration, LocalDateTime}
 
 import com.splunk._
 import com.typesafe.config.Config
-import configs.Configs
+import configs.ConfigReader
 import configs.syntax._
 import io.smartdatalake.config.SdlConfigObject.{ConnectionId, DataObjectId}
 import io.smartdatalake.config.{FromConfigFactory, InstanceRegistry}
 import io.smartdatalake.util.hdfs.PartitionValues
 import io.smartdatalake.util.misc.SmartDataLakeLogger
+import io.smartdatalake.workflow.ActionPipelineContext
 import io.smartdatalake.workflow.connection.SplunkConnection
 import io.smartdatalake.workflow.dataobject.SplunkFormatter.{fromSplunkStringFormat, toSplunkStringFormat}
 import org.apache.spark.sql._
@@ -60,7 +61,7 @@ case class SplunkDataObject(override val id: DataObjectId,
   private implicit val rowSeqEncoder: Encoder[Seq[Row]] = Encoders.kryo[Seq[Row]]
   private implicit val queryTimeIntervalEncoder: Encoder[QueryTimeInterval] = Encoders.kryo[QueryTimeInterval]
 
-  override def getDataFrame(partitionValues: Seq[PartitionValues] = Seq())(implicit spark: SparkSession): DataFrame = {
+  override def getDataFrame(partitionValues: Seq[PartitionValues] = Seq())(implicit spark: SparkSession, context: ActionPipelineContext): DataFrame = {
     readFromSplunk(params)
   }
 
@@ -164,11 +165,11 @@ object SplunkDataObject extends FromConfigFactory[DataObject] {
   }
 
   /**
-   * A [[Configs]] reader that reads [[SplunkParams]] values.
+   * A [[ConfigReader]] that reads [[SplunkParams]] values.
    *
    * SplunkParams have special semantics for Duration which are covered with this reader.
    */
-  implicit val splunkParamsReader: Configs[SplunkParams] = Configs.fromConfigTry { c =>
+  implicit val splunkParamsReader: ConfigReader[SplunkParams] = ConfigReader.fromConfigTry { c =>
     SplunkParams.fromConfig(c)
   }
 
@@ -237,10 +238,10 @@ case class SplunkParams(
 
 object SplunkParams {
   def fromConfig(config: Config): SplunkParams = {
-    implicit val splunkLocalDateTimeReader: Configs[LocalDateTime] = Configs.fromTry { (c, p) =>
+    implicit val splunkLocalDateTimeReader: ConfigReader[LocalDateTime] = ConfigReader.fromTry { (c, p) =>
       SplunkDataObject.parseConfigDateTime(c.getString(p))
     }
-    implicit val splunkDurationReader: Configs[Duration] = Configs.fromTry { (c, p) =>
+    implicit val splunkDurationReader: ConfigReader[Duration] = ConfigReader.fromTry { (c, p) =>
       SplunkDataObject.parseConfigDuration(c.getInt(p))
     }
     config.extract[SplunkParams].value
