@@ -89,18 +89,13 @@ case class CustomSparkAction ( override val id: ActionObjectId,
       }.toSeq
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[Action] = CustomSparkAction
 }
 
 
 object CustomSparkAction extends FromConfigFactory[Action] {
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): CustomSparkAction = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): CustomSparkAction = {
     import io.smartdatalake.config._
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[CustomSparkAction].value
+    extract[CustomSparkAction](config)
   }
 }

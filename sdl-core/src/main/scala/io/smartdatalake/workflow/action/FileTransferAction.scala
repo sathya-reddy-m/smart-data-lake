@@ -70,21 +70,12 @@ case class FileTransferAction(override val id: ActionObjectId,
     subFeed.copy(fileRefs = Some(fileRefPairs.map(_._2)), dataObjectId = output.id, processedInputFileRefs = Some(inputFileRefs))
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[Action] = FileTransferAction
 }
 
 object FileTransferAction extends FromConfigFactory[Action] {
-
-  /**
-   * @inheritdoc
-   */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): FileTransferAction = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): FileTransferAction = {
     import io.smartdatalake.config._
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[FileTransferAction].value
+    extract[FileTransferAction](config)
   }
 }

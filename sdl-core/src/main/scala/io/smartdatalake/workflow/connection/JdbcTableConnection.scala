@@ -112,12 +112,9 @@ case class JdbcTableConnection( override val id: ConnectionId,
 }
 
 object JdbcTableConnection extends FromConfigFactory[Connection] {
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): JdbcTableConnection = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): JdbcTableConnection = {
     import io.smartdatalake.config._
-
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[JdbcTableConnection].value
+    extract[JdbcTableConnection](config)
   }
 }
 

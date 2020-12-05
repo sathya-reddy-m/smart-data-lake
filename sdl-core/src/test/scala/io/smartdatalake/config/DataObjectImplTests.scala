@@ -18,7 +18,8 @@
  */
 package io.smartdatalake.config
 
-import com.typesafe.config.{ConfigException, ConfigFactory}
+import com.typesafe.config.{ConfigException, ConfigFactory, ConfigValueFactory}
+import configs.ConfigKeyNaming
 import io.smartdatalake.config.SdlConfigObject.DataObjectId
 import io.smartdatalake.definitions.DateColumnType
 import io.smartdatalake.util.misc.{AclDef, AclElement}
@@ -36,7 +37,7 @@ class DataObjectImplTests extends FlatSpec with Matchers {
   "AvroFileDataObject" should "be parsable" in {
 
     val t = typeOf[AvroFileDataObject].members.collect {
-      case m: MethodSymbol if m.isCaseAccessor => m
+      case (m: MethodSymbol @unchecked) if m.isCaseAccessor => m
     }
     val names = t.map(_.name.decodedName)
 

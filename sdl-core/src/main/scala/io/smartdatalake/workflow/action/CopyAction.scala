@@ -89,21 +89,13 @@ case class CopyAction(override val id: ActionObjectId,
     }
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[Action] = CopyAction
 }
 
 object CopyAction extends FromConfigFactory[Action] {
 
-  /**
-   * @inheritdoc
-   */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): CopyAction = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): CopyAction = {
     import io.smartdatalake.config._
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[CopyAction].value
+    extract[CopyAction](config)
   }
 }

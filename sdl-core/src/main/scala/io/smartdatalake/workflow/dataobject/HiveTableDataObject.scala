@@ -203,22 +203,12 @@ case class HiveTableDataObject(override val id: DataObjectId,
     HiveUtil.dropTable(table)
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[DataObject] = HiveTableDataObject
 }
 
 object HiveTableDataObject extends FromConfigFactory[DataObject] {
-
-  /**
-   * @inheritdoc
-   */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): HiveTableDataObject = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): HiveTableDataObject = {
     import io.smartdatalake.config._
-
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[HiveTableDataObject].value
+    extract[HiveTableDataObject](config)
   }
 }

@@ -83,11 +83,8 @@ object JmsDataObject extends FromConfigFactory[DataObject] {
   /**
    * @inheritdoc
    */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): JmsDataObject = {
-    import configs.syntax.ConfigOps
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): JmsDataObject = {
     import io.smartdatalake.config._
-
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[JmsDataObject].value
+    extract[JmsDataObject](config)
   }
 }

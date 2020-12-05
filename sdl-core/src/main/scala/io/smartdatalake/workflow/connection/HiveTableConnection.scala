@@ -39,19 +39,12 @@ case class HiveTableConnection( override val id: ConnectionId,
                                 override val metadata: Option[ConnectionMetadata] = None
                                ) extends Connection {
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[Connection] = HiveTableConnection
 }
 
 object HiveTableConnection extends FromConfigFactory[Connection] {
-
-  /**
-   * @inheritdoc
-   */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): HiveTableConnection = {
-    import configs.syntax.RichConfig
-    config.extract[HiveTableConnection].value
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): HiveTableConnection = {
+    import io.smartdatalake.config._
+    extract[HiveTableConnection](config)
   }
 }

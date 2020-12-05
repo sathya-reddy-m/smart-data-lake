@@ -175,12 +175,9 @@ object SplunkDataObject extends FromConfigFactory[DataObject] {
   /**
    * @inheritdoc
    */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): SplunkDataObject = {
-    import configs.syntax.ConfigOps
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): SplunkDataObject = {
     import io.smartdatalake.config._
-
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[SplunkDataObject].value
+    extract[SplunkDataObject](config)
   }
 }
 

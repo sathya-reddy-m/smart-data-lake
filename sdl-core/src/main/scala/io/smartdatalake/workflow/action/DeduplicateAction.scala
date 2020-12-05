@@ -140,21 +140,12 @@ case class DeduplicateAction(override val id: ActionObjectId,
     val udf_getLatestRowIndex: UserDefinedFunction = udf(getLatestRowIndex _)
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[Action] = DeduplicateAction
 }
 
 object DeduplicateAction extends FromConfigFactory[Action] {
-
-  /**
-   * @inheritdoc
-   */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): DeduplicateAction = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): DeduplicateAction = {
     import io.smartdatalake.config._
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[DeduplicateAction].value
+    extract[DeduplicateAction](config)
   }
 }

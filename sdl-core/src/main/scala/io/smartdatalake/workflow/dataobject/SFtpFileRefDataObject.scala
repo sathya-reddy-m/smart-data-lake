@@ -140,22 +140,12 @@ case class SFtpFileRefDataObject(override val id: DataObjectId,
     case ex: Throwable => throw ConnectionTestException(s"($id) Can not connect. Error: ${ex.getMessage}", ex)
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[DataObject] = SFtpFileRefDataObject
 }
 
 object SFtpFileRefDataObject extends FromConfigFactory[DataObject] {
-
-  /**
-   * @inheritdoc
-   */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): SFtpFileRefDataObject = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): SFtpFileRefDataObject = {
     import io.smartdatalake.config._
-
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[SFtpFileRefDataObject].value
+    extract[SFtpFileRefDataObject](config)
   }
 }

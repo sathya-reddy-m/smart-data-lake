@@ -92,7 +92,9 @@ private[smartdatalake] object ConfigParser extends SmartDataLakeLogger {
     val factoryMethod: FactoryMethod[A] = new FactoryMethod(companionObjectSymbol, FactoryMethodExtractor.extract(companionObjectSymbol))
 
     // prepare refined config
-    val configWithId = config.withValue("id", ConfigValueFactory.fromAnyRef(id))
+    val configWithId = config
+      .withValue("id", ConfigValueFactory.fromAnyRef(id))
+      .withoutPath("type")
     val refinedConfig = Environment.configPathsForLocalSubstitution.foldLeft(configWithId){
       case (config, path) => try {
         localSubstitution(config, path)

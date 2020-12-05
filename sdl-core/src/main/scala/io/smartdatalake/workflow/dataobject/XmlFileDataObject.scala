@@ -80,23 +80,13 @@ case class XmlFileDataObject(override val id: DataObjectId,
     } else dfSuper
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[DataObject] = XmlFileDataObject
 }
 
 object XmlFileDataObject extends FromConfigFactory[DataObject] {
-
-  /**
-   * @inheritdoc
-   */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): XmlFileDataObject = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): XmlFileDataObject = {
     import io.smartdatalake.config._
-
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[XmlFileDataObject].value
+    extract[XmlFileDataObject](config)
   }
 }
 

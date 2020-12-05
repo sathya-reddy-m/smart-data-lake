@@ -191,23 +191,13 @@ case class TickTockHiveTableDataObject(override val id: DataObjectId,
     HiveUtil.dropTable(table)
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[DataObject] = TickTockHiveTableDataObject
 }
 
 
 object TickTockHiveTableDataObject extends FromConfigFactory[DataObject] {
-
-  /**
-   * @inheritdoc
-   */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): TickTockHiveTableDataObject = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): TickTockHiveTableDataObject = {
     import io.smartdatalake.config._
-
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[TickTockHiveTableDataObject].value
+    extract[TickTockHiveTableDataObject](config)
   }
 }

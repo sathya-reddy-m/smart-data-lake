@@ -129,21 +129,12 @@ case class HistorizeAction(
     } else  Historization.getInitialHistory(newFeedDf, refTimestamp)
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[Action] = HistorizeAction
 }
 
 object HistorizeAction extends FromConfigFactory[Action] {
-
-  /**
-   * @inheritdoc
-   */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): HistorizeAction = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): HistorizeAction = {
     import io.smartdatalake.config._
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[HistorizeAction].value
+    extract[HistorizeAction](config)
   }
 }

@@ -37,7 +37,7 @@ private[smartdatalake] trait FromConfigFactory[+CO <: SdlConfigObject with Parsa
    *
    * @return a new instance of type `CO` parsed from the a context dependent [[Config]].
    */
-  def fromConfig(config: Config, instanceRegistry: InstanceRegistry): CO
+  def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): CO
 
   /**
    * Helper method to extract case class from config
@@ -46,9 +46,5 @@ private[smartdatalake] trait FromConfigFactory[+CO <: SdlConfigObject with Parsa
     import configs.syntax.RichConfig
     config.extract[T].value
   }
-
-  // default naming strategy is to allow lowerCamelCase and hypen-separated key naming, and fail on superfluous keys
-  implicit def defaultNaming[A]: ConfigKeyNaming[A] = ConfigKeyNaming.lowerCamelCase[A].or(ConfigKeyNaming.hyphenSeparated[A].apply)
-    .withFailOnSuperfluousKeys()
 
 }

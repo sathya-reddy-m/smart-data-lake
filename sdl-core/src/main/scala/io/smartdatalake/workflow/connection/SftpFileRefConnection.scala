@@ -80,20 +80,12 @@ case class SftpFileRefConnection( override val id: ConnectionId,
       p.getObject.close()
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[Connection] = SftpFileRefConnection
 }
 
 object SftpFileRefConnection extends FromConfigFactory[Connection] {
-
-  /**
-   * @inheritdoc
-   */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): SftpFileRefConnection = {
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): SftpFileRefConnection = {
     import io.smartdatalake.config._
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
     extract[SftpFileRefConnection](config)
   }
 }

@@ -19,6 +19,7 @@
 package io.smartdatalake.workflow.dataobject
 
 import com.typesafe.config.Config
+import configs.ConfigKeyNaming
 import io.smartdatalake.config.SdlConfigObject.DataObjectId
 import io.smartdatalake.config.{FromConfigFactory, InstanceRegistry}
 import io.smartdatalake.util.hdfs.PartitionValues
@@ -43,23 +44,13 @@ case class CustomDfDataObject(override val id: DataObjectId,
     df
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[DataObject] = CustomDfDataObject
 }
 
 object CustomDfDataObject extends FromConfigFactory[DataObject] {
-
-  /**
-   * @inheritdoc
-   */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): CustomDfDataObject = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): CustomDfDataObject = {
     import io.smartdatalake.config._
-
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[CustomDfDataObject].value
+    extract[CustomDfDataObject](config)
   }
 }
 

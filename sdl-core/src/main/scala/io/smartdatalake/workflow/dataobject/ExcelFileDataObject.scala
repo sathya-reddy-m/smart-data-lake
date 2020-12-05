@@ -117,23 +117,13 @@ case class ExcelFileDataObject(override val id: DataObjectId,
     }.filter(validHeaderChars.contains)
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[DataObject] = ExcelFileDataObject
 }
 
 object ExcelFileDataObject extends FromConfigFactory[DataObject] {
-
-  /**
-   * @inheritdoc
-   */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): ExcelFileDataObject = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): ExcelFileDataObject = {
     import io.smartdatalake.config._
-
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[ExcelFileDataObject].value
+    extract[ExcelFileDataObject](config)
   }
 }
 

@@ -161,11 +161,8 @@ case class JdbcTableDataObject(override val id: DataObjectId,
 }
 
 object JdbcTableDataObject extends FromConfigFactory[DataObject] {
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): JdbcTableDataObject = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): JdbcTableDataObject = {
     import io.smartdatalake.config._
-
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[JdbcTableDataObject].value
+    extract[JdbcTableDataObject](config)
   }
 }

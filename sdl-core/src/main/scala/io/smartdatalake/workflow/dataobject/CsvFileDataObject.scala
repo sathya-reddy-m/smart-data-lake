@@ -117,22 +117,12 @@ case class CsvFileDataObject( override val id: DataObjectId,
     }
   }
 
-  /**
-   * @inheritdoc
-   */
   override def factory: FromConfigFactory[DataObject] = CsvFileDataObject
 }
 
 object CsvFileDataObject extends FromConfigFactory[DataObject] {
-
-  /**
-   * @inheritdoc
-   */
-  override def fromConfig(config: Config, instanceRegistry: InstanceRegistry): CsvFileDataObject = {
-    import configs.syntax.RichConfig
+  override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): CsvFileDataObject = {
     import io.smartdatalake.config._
-
-    implicit val instanceRegistryImpl: InstanceRegistry = instanceRegistry
-    config.extract[CsvFileDataObject].value
+    extract[CsvFileDataObject](config)
   }
 }

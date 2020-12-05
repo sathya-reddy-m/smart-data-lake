@@ -18,7 +18,7 @@
  */
 package io.smartdatalake
 
-import configs.{ConfigError, ConfigReader, Result}
+import configs.{ConfigError, ConfigKeyNaming, ConfigReader, Result}
 import io.smartdatalake.config.SdlConfigObject.{ActionObjectId, ConnectionId, DataObjectId}
 import io.smartdatalake.definitions.{Condition, ExecutionMode}
 import io.smartdatalake.util.hdfs.SparkRepartitionDef
@@ -32,6 +32,11 @@ import scala.language.implicitConversions
 
 package object config {
 
+  // default naming strategy is to allow lowerCamelCase and hypen-separated key naming, and fail on superfluous keys
+  implicit def sdlDefaultNaming[A]: ConfigKeyNaming[A] =
+    ConfigKeyNaming.hyphenSeparated[A].or(ConfigKeyNaming.lowerCamelCase[A].apply _)
+      .withFailOnSuperfluousKeys()
+
   /**
    * A [[ConfigReader]] reader that reads [[Either]] values.
    *
@@ -42,8 +47,8 @@ package object config {
    * @return A [[ConfigReader]] containing a [[Left]] or, if it can not be parsed, a [[Right]] value of the corresponding type.
    */
   implicit def eitherReader[A, B](implicit aReader: ConfigReader[A], bReader: ConfigReader[B]): ConfigReader[Either[A, B]] = {
-    ConfigReader.fromTry { (c, p) =>
-      aReader.read(c, p).map(Left(_)).orElse(bReader.read(c, p).map(Right(_))).valueOrThrow(_.configException)
+    ConfigReader.from { (c, p) =>
+      aReader.read(c, p).map(Left(_)).orElse(bReader.read(c, p).map(Right(_)))
     }
   }
 
