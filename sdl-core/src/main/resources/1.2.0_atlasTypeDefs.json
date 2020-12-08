@@ -258,7 +258,7 @@
       "typeVersion": "1.2.0",
       "attributeDefs": [
         {
-          "name": "DataObjectId",
+          "name": "id",
           "typeName": "string",
           "cardinality": "SINGLE",
           "isOptional": false,
