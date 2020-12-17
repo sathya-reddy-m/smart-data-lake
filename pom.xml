@@ -21,7 +21,7 @@
 
 	<groupId>io.smartdatalake</groupId>
 	<artifactId>sdl-parent</artifactId>
-	<version>2.0.1-SNAPSHOT</version>
+	<version>2.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -181,6 +181,7 @@
 							<serverId>ossrh</serverId>
 							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 							<autoReleaseAfterClose>false</autoReleaseAfterClose>
+							<stagingProgressTimeoutMinutes>30</stagingProgressTimeoutMinutes>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -2409,6 +2410,30 @@
 			</dependency>
 
 			<!-- sdl dependency management -->
+			<dependency>
+				<groupId>org.apache.spark</groupId>
+				<artifactId>spark-core_${scala.minor.version}</artifactId>
+				<version>${spark.version}</version>
+				<scope>${spark.deps.scope}</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.spark</groupId>
+				<artifactId>spark-sql_${scala.minor.version}</artifactId>
+				<version>${spark.version}</version>
+				<scope>${spark.deps.scope}</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.spark</groupId>
+				<artifactId>spark-catalyst_${scala.minor.version}</artifactId>
+				<version>${spark.version}</version>
+				<scope>${spark.deps.scope}</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.spark</groupId>
+				<artifactId>spark-hive_${scala.minor.version}</artifactId>
+				<version>${spark.version}</version>
+				<scope>${spark.deps.scope}</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-compress</artifactId>

@@ -81,6 +81,8 @@ package object config {
 
   implicit val customFileTransformerConfigReader: ConfigReader[CustomFileTransformerConfig] = ConfigReader.derive[CustomFileTransformerConfig]
 
+  implicit val sparkUdfCreatorConfigReader: ConfigReader[SparkUDFCreatorConfig] = ConfigReader.derive[SparkUDFCreatorConfig]
+
   implicit val sparkRepartitionDefReader: ConfigReader[SparkRepartitionDef] = ConfigReader.derive[SparkRepartitionDef]
 
   implicit val outputModeReader: ConfigReader[OutputMode] = {
