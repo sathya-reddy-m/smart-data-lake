@@ -18,7 +18,7 @@
  */
 package io.smartdatalake.config
 
-import com.typesafe.config.{Config, ConfigValueFactory, ConfigValueType}
+import com.typesafe.config.{Config, ConfigException, ConfigValueFactory, ConfigValueType}
 import configs.Result
 import configs.syntax._
 import io.smartdatalake.config.SdlConfigObject.{ActionObjectId, ConfigObjectId, ConnectionId, DataObjectId}
@@ -113,6 +113,8 @@ private[smartdatalake] object ConfigParser extends SmartDataLakeLogger {
           throw Option(e.getCause).getOrElse(e)
       }.get
     } catch {
+      case e: ConfigException if e.getMessage.contains(errId) => throw e
+      case e: ConfigException => throw new ConfigurationException(s"($errId) ${e.getMessage}", throwable = e)
       case e: Exception => throw new ConfigurationException(s"($errId) ${e.getClass.getSimpleName}: ${e.getMessage}", throwable = e)
     }
   }
