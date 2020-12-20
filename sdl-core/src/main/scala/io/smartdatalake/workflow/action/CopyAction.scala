@@ -24,7 +24,7 @@ import io.smartdatalake.config.{ConfigurationException, FromConfigFactory, Insta
 import io.smartdatalake.definitions.ExecutionMode
 import io.smartdatalake.util.hdfs.PartitionValues
 import io.smartdatalake.workflow.action.customlogic.CustomDfTransformerConfig
-import io.smartdatalake.workflow.dataobject.{CanCreateDataFrame, CanHandlePartitions, CanWriteDataFrame, DataObject, FileRefDataObject}
+import io.smartdatalake.workflow.dataobject._
 import io.smartdatalake.workflow.{ActionPipelineContext, SparkSubFeed, SubFeed}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions.expr
@@ -100,7 +100,6 @@ case class CopyAction(override val id: ActionObjectId,
 }
 
 object CopyAction extends FromConfigFactory[Action] {
-
   override def fromConfig(config: Config)(implicit instanceRegistry: InstanceRegistry): CopyAction = {
     import io.smartdatalake.config._
     extract[CopyAction](config)

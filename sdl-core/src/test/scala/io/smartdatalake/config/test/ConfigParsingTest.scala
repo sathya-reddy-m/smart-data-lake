@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package io.smartdatalake.config
+package io.smartdatalake.config.test
 
-import com.typesafe.config.ConfigFactory
-import configs.{ConfigReader, Result}
+import com.typesafe.config.{ConfigException, ConfigFactory}
 import io.smartdatalake.config.ConfigParser.localSubstitution
 import io.smartdatalake.config.SdlConfigObject.{ConnectionId, DataObjectId}
 import io.smartdatalake.config.objects.{TestAction, TestConnection, TestDataObject}
-import io.smartdatalake.definitions.{Environment, ExecutionMode, PartitionDiffMode}
+import io.smartdatalake.config.{ConfigParser, ConfigurationException, InstanceRegistry, SdlConfigObject}
+import io.smartdatalake.definitions.{Environment, PartitionDiffMode}
 import io.smartdatalake.workflow.action.{Action, FileTransferAction}
 import io.smartdatalake.workflow.dataobject.{CsvFileDataObject, DataObject, DataObjectMetadata, RawFileDataObject}
 import org.apache.spark.sql.types.StructType
@@ -305,10 +305,11 @@ class ConfigParsingTest extends FlatSpec with Matchers {
         |a = {
         | id = a
         | inputId = tdo1
-        | outputId = tdo2
+        | output-id = tdo2
         | executionMode = {
         |  type = PartitionDiffMode
         |  partitionColNb = 2
+        |  stop-if-no-data = true
         | }
         |}
         |
@@ -319,6 +320,147 @@ class ConfigParsingTest extends FlatSpec with Matchers {
     val expected = TestAction(id = "a", arg1 = None, inputId = "tdo1", outputId = "tdo2", executionMode = Some(PartitionDiffMode(partitionColNb = Some(2))))
     testAction shouldEqual expected
 
+  }
+
+  "TestAction" should "fail on superfluous key" in {
+    val dataObjectsConfig = ConfigFactory.parseString(
+      """
+        |dataObjects = {
+        | tdo1 = {
+        |   type = io.smartdatalake.config.objects.TestDataObject
+        |   arg1 = foo
+        |   args = [bar, "!"]
+        | }
+        | tdo2 = {
+        |   type = io.smartdatalake.config.objects.TestDataObject
+        |   arg1 = goo
+        |   args = [bar]
+        | }
+        |}
+      """.stripMargin).resolve
+    val config = ConfigFactory.parseString(
+      """
+        |a = {
+        | id = a
+        | inputId = tdo1
+        | outputId = tdo2
+        | test = test
+        | executionMode = {
+        |  type = PartitionDiffMode
+        |  partitionColNb = 2
+        | }
+        |}
+        |
+        |""".stripMargin).resolve
+
+    implicit val registry: InstanceRegistry = ConfigParser.parse(dataObjectsConfig)
+    intercept[ConfigException](TestAction.fromConfig(config.getConfig("a")))
+  }
+
+  "TestAction" should "fail on superfluous key in optional case class" in {
+    val dataObjectsConfig = ConfigFactory.parseString(
+      """
+        |dataObjects = {
+        | tdo1 = {
+        |   type = io.smartdatalake.config.objects.TestDataObject
+        |   arg1 = foo
+        |   args = [bar, "!"]
+        | }
+        | tdo2 = {
+        |   type = io.smartdatalake.config.objects.TestDataObject
+        |   arg1 = goo
+        |   args = [bar]
+        | }
+        |}
+      """.stripMargin).resolve
+    val config = ConfigFactory.parseString(
+      """
+        |a = {
+        | id = a
+        | inputId = tdo1
+        | outputId = tdo2
+        | executionMode = {
+        |  type = PartitionDiffMode
+        |  partitionColNb = 2
+        | }
+        | metadata {
+        |  test = test // doesnt exist
+        | }
+        |}
+        |
+        |""".stripMargin).resolve
+
+    implicit val registry: InstanceRegistry = ConfigParser.parse(dataObjectsConfig)
+    intercept[ConfigException](TestAction.fromConfig(config.getConfig("a")))
+  }
+
+  "TestAction" should "fail on superfluous key in optional sealed trait" in {
+    val dataObjectsConfig = ConfigFactory.parseString(
+      """
+        |dataObjects = {
+        | tdo1 = {
+        |   type = io.smartdatalake.config.objects.TestDataObject
+        |   arg1 = foo
+        |   args = [bar, "!"]
+        | }
+        | tdo2 = {
+        |   type = io.smartdatalake.config.objects.TestDataObject
+        |   arg1 = goo
+        |   args = [bar]
+        | }
+        |}
+      """.stripMargin).resolve
+    val config = ConfigFactory.parseString(
+      """
+        |a = {
+        | id = a
+        | inputId = tdo1
+        | outputId = tdo2
+        | executionMode = {
+        |  type = PartitionDiffMode
+        |  partitionColNb = 2
+        |  test = test // doesnt exist
+        | }
+        |}
+        |
+        |""".stripMargin).resolve
+
+    implicit val registry: InstanceRegistry = ConfigParser.parse(dataObjectsConfig)
+    intercept[ConfigException](TestAction.fromConfig(config.getConfig("a")))
+  }
+
+  "TestAction" should "fail on unknown type of optional sealed trait" in {
+    val dataObjectsConfig = ConfigFactory.parseString(
+      """
+        |dataObjects = {
+        | tdo1 = {
+        |   type = io.smartdatalake.config.objects.TestDataObject
+        |   arg1 = foo
+        |   args = [bar, "!"]
+        | }
+        | tdo2 = {
+        |   type = io.smartdatalake.config.objects.TestDataObject
+        |   arg1 = goo
+        |   args = [bar]
+        | }
+        |}
+      """.stripMargin).resolve
+    val config = ConfigFactory.parseString(
+      """
+        |a = {
+        | id = a
+        | inputId = tdo1
+        | outputId = tdo2
+        | executionMode = {
+        |  type = UnknownMode
+        |  partitionColNb = 2
+        | }
+        |}
+        |
+        |""".stripMargin).resolve
+
+    implicit val registry: InstanceRegistry = ConfigParser.parse(dataObjectsConfig)
+    intercept[ConfigException](TestAction.fromConfig(config.getConfig("a")))
   }
 
   "single local substitution" should "be processed" in {
