@@ -91,7 +91,9 @@ private[smartdatalake] case class HadoopFileActionDAGRunStateStore(statePath: St
       override def accept(path: Path): Boolean = path.getName.startsWith(appName + HadoopFileActionDAGRunStateStore.fileNamePartSeparator)
     }
     val searchPath = path.getOrElse( new Path(hadoopStatePath, "*"))
+    logger.debug(s"searching path $searchPath for state")
     filesystem.globStatus(new Path(searchPath, "*.json"), pathFilter )
+      .map{ x => logger.debug(s"found file ${x.getPath}"); x }
       .filter( x => x.isFile)
       .flatMap( x => x.getPath.getName match {
         case filenameMatcher(appName, runId, attemptId) =>
@@ -100,6 +102,7 @@ private[smartdatalake] case class HadoopFileActionDAGRunStateStore(statePath: St
       })
       .filter(_.appName == this.appName)
   }
+
 
   /**
    * recover previous run state
