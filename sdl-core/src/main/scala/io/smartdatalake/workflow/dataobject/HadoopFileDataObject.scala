@@ -184,6 +184,24 @@ private[smartdatalake] trait HadoopFileDataObject extends FileRefDataObject with
     }.getOrElse(Seq())
   }
 
+  /**
+   * get partition values formatted by partition layout
+   * missing partition values are removed from partition layout if they are at the end
+   */
+  def getPartitionStringWithoutMissingPartitionValuesAtEnd(partitionValues: PartitionValues)(implicit session: SparkSession): Option[String] = {
+    def takeUntilAllPartitionsFound(partitionsSearched: Set[String], partitionsRemaining: Seq[String]): Seq[String] = {
+      if (partitionsSearched.isEmpty) return Seq()
+      val partitionSelected = partitionsRemaining.head
+      partitionSelected +: takeUntilAllPartitionsFound(partitionsSearched - partitionSelected, partitionsRemaining.tail)
+    }
+    if (partitionLayout().isDefined) {
+      val partitionsToUse = takeUntilAllPartitionsFound(partitionValues.keys, partitions)
+      val partitionLayout = HdfsUtil.getHadoopPartitionLayout(partitionsToUse, separator)
+      Some(partitionValues.getPartitionString(partitionLayout))
+    } else if (partitions.isEmpty) None
+    else throw new RuntimeException("Partition layout needed when working with PartitionValues")
+  }
+
   override def createEmptyPartition(partitionValues: PartitionValues)(implicit session: SparkSession): Unit = {
     // check if valid init of partitions -> otherwise we can not create empty partition as path is not fully defined
     if (partitions.inits.map(_.toSet).contains(partitionValues.keys)) {

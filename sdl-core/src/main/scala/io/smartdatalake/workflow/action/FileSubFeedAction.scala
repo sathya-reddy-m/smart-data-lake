@@ -123,6 +123,8 @@ abstract class FileSubFeedAction extends Action {
     }
     val filesWritten = transformedSubFeed.fileRefs.get.size.toLong
     logger.info(s"($id) finished writing files to ${output.id}: duration=$d files_written=$filesWritten")
+    // make sure empty partitions are created as well
+    output.createMissingPartitions(outputSubFeed.partitionValues)
     // send metric to action (for file subfeeds this has to be done manually while spark subfeeds get's the metrics via a spark events listener)
     onRuntimeMetrics(Some(output.id), GenericMetrics(s"$id-${output.id}", 1, Map("duration"->d, "files_written"->filesWritten)))
     // update subFeed

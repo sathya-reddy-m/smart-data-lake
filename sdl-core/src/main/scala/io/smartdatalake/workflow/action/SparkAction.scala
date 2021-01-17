@@ -93,7 +93,8 @@ private[smartdatalake] abstract class SparkAction extends Action {
           // validate partition values existing for input
           input match {
             case partitionedInput: DataObject with CanHandlePartitions if subFeed.partitionValues.nonEmpty && (context.phase==ExecutionPhase.Exec || subFeed.isDAGStart) =>
-              val expectedPartitions = partitionedInput.filterExpectedPartitionValues(subFeed.partitionValues)
+              val completePartitionValues = subFeed.partitionValues.filter(_.keys==partitionedInput.partitions.toSet)
+              val expectedPartitions = partitionedInput.filterExpectedPartitionValues(completePartitionValues)
               val missingPartitionValues = if (expectedPartitions.nonEmpty) PartitionValues.checkExpectedPartitionValues(partitionedInput.listPartitions, expectedPartitions) else Seq()
               assert(missingPartitionValues.isEmpty, s"($id) partitions ${missingPartitionValues.mkString(", ")} missing for ${input.id}")
             case _ => Unit
