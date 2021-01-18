@@ -88,15 +88,15 @@ private[smartdatalake] case class HadoopFileActionDAGRunStateStore(statePath: St
    * Search state directory for state files of this app
    */
   private def getFiles(path: Option[Path] = None): Seq[HadoopFileStateId] = {
-    val filenameMatcher = s"([^_]+)\\${HadoopFileActionDAGRunStateStore.fileNamePartSeparator}([0-9]+)\\${HadoopFileActionDAGRunStateStore.fileNamePartSeparator}([0-9]+)\\.json".r
+    val filenameMatcher = s"(.+)\\${HadoopFileActionDAGRunStateStore.fileNamePartSeparator}([0-9]+)\\${HadoopFileActionDAGRunStateStore.fileNamePartSeparator}([0-9]+)\\.json".r
     val pathFilter = new PathFilter {
       override def accept(path: Path): Boolean = path.getName.startsWith(appName + HadoopFileActionDAGRunStateStore.fileNamePartSeparator)
     }
     val searchPath = path.getOrElse( new Path(hadoopStatePath, "*"))
     logger.debug(s"searching path $searchPath for state")
     filesystem.globStatus(new Path(searchPath, "*.json"), pathFilter )
-      .map{ x => logger.debug(s"found file ${x.getPath}"); x }
       .filter( x => x.isFile)
+      .map{ x => logger.debug(s"found files ${x.getPath}"); x }
       .flatMap( x => x.getPath.getName match {
         case filenameMatcher(appName, runId, attemptId) =>
           Some(HadoopFileStateId(x.getPath, appName, runId.toInt, attemptId.toInt))
