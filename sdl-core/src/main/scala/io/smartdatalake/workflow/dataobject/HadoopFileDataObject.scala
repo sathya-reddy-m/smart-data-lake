@@ -152,18 +152,30 @@ private[smartdatalake] trait HadoopFileDataObject extends FileRefDataObject with
     assert(partitions.nonEmpty, s"deletePartitions called but no partition columns are defined for $id")
 
     // delete given partitions on hdfs
-    partitionValues.foreach { pv =>
-      // check if valid init of partitions -> then we can delete all at once, otherwise we need to search with globs as delete doesnt support wildcards
-      if (partitions.inits.map(_.toSet).contains(pv.keys)) {
-        val partitionLayout = HdfsUtil.getHadoopPartitionLayout(partitions.filter(pv.isDefinedAt), separator)
-        val partitionPath = new Path(hadoopPath, pv.getPartitionString(partitionLayout))
-        filesystem.delete(partitionPath, true) // recursive=true
-      } else {
-        val globPartitionPath = new Path(hadoopPath, pv.getPartitionString(partitionLayout().get))
-        logger.info(s"($id) deletePartition with globs needed because ${pv.keys.mkString(",")} is not an init of partition columns ${partitions.mkString(",")}, path = $globPartitionPath")
-        val partitionPathsToDelete = filesystem.globStatus(globPartitionPath).map(_.getPath)
-        partitionPathsToDelete.foreach{ path => filesystem.delete(path, true) }
-      }
+    val pathsToDelete = partitionValues.flatMap(getConcretePaths)
+    pathsToDelete.foreach(filesystem.delete(_, /*recursive*/ true))
+  }
+
+  /**
+   * Generate all paths for given partition values exploding undefined partitions before the last given partition value.
+   * Use case: Reading all files from a given path with spark cannot contain wildcards.
+   *   If there are partitions without given partition value before the last partition value given, they must be searched with globs.
+   */
+  def getConcretePaths(pv: PartitionValues)(implicit session: SparkSession): Seq[Path] = {
+    assert(partitions.nonEmpty)
+    // check if valid init of partitions -> then we can read all at once, otherwise we need to search with globs as load doesnt support wildcards
+    if (partitions.inits.map(_.toSet).contains(pv.keys)) {
+      val partitionLayout = HdfsUtil.getHadoopPartitionLayout(partitions.filter(pv.isDefinedAt), separator)
+      Seq(new Path(hadoopPath, pv.getPartitionString(partitionLayout)))
+    } else {
+      // get all partition columns until last given partition value
+      val givenPartitions = pv.keys
+      val initPartitions = partitions.reverse.dropWhile(!givenPartitions.contains(_)).reverse
+      // create path with wildcards
+      val partitionLayout = HdfsUtil.getHadoopPartitionLayout(initPartitions, separator)
+      val globPartitionPath = new Path(hadoopPath, pv.getPartitionString(partitionLayout))
+      logger.info(s"($id) deletePartition with globs needed because ${pv.keys.mkString(",")} is not an init of partition columns ${partitions.mkString(",")}, path = $globPartitionPath")
+      filesystem.globStatus(globPartitionPath).map(_.getPath)
     }
   }
 
@@ -182,24 +194,6 @@ private[smartdatalake] trait HadoopFileDataObject extends FileRefDataObject with
           .map( path => PartitionLayout.extractPartitionValues(partitionLayout, "", path + separator))
           .toSeq
     }.getOrElse(Seq())
-  }
-
-  /**
-   * get partition values formatted by partition layout
-   * missing partition values are removed from partition layout if they are at the end
-   */
-  def getPartitionStringWithoutMissingPartitionValuesAtEnd(partitionValues: PartitionValues)(implicit session: SparkSession): Option[String] = {
-    def takeUntilAllPartitionsFound(partitionsSearched: Set[String], partitionsRemaining: Seq[String]): Seq[String] = {
-      if (partitionsSearched.isEmpty) return Seq()
-      val partitionSelected = partitionsRemaining.head
-      partitionSelected +: takeUntilAllPartitionsFound(partitionsSearched - partitionSelected, partitionsRemaining.tail)
-    }
-    if (partitionLayout().isDefined) {
-      val partitionsToUse = takeUntilAllPartitionsFound(partitionValues.keys, partitions)
-      val partitionLayout = HdfsUtil.getHadoopPartitionLayout(partitionsToUse, separator)
-      Some(partitionValues.getPartitionString(partitionLayout))
-    } else if (partitions.isEmpty) None
-    else throw new RuntimeException("Partition layout needed when working with PartitionValues")
   }
 
   override def createEmptyPartition(partitionValues: PartitionValues)(implicit session: SparkSession): Unit = {
