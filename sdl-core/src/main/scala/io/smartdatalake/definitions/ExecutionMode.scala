@@ -346,6 +346,7 @@ case class ProcessAllMode() extends ExecutionMode {
                                             , partitionValuesTransform: Seq[PartitionValues] => Map[PartitionValues,PartitionValues])
                                            (implicit session: SparkSession, context: ActionPipelineContext): Option[(Seq[PartitionValues], Seq[PartitionValues], Option[String])] = {
     // return: reset given partition values and filter
+    logger.info(s"($actionId) ProcessModeAll reset partition values")
     Some(Seq(),Seq(),None)
   }
 }
