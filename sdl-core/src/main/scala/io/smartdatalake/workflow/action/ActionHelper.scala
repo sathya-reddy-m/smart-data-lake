@@ -111,7 +111,7 @@ private[smartdatalake] object ActionHelper extends SmartDataLakeLogger {
     else None
   }
 
-  def getOptionalDataFrame(sparkInput: CanCreateDataFrame, partitionValues: Seq[PartitionValues] = Seq())(implicit session: SparkSession,  context: ActionPipelineContext) : Option[DataFrame] = try {
+  def getOptionalDataFrame(sparkInput: CanCreateDataFrame, partitionValues: Seq[PartitionValues] = Seq())(implicit session: SparkSession, context: ActionPipelineContext) : Option[DataFrame] = try {
     Some(sparkInput.getDataFrame(partitionValues))
   } catch {
     case e: IllegalArgumentException if e.getMessage.contains("DataObject schema is undefined") => None
@@ -154,13 +154,14 @@ private[smartdatalake] object ActionHelper extends SmartDataLakeLogger {
    * Updates the partition values of a SubFeed to the partition columns of the given input data object:
    * - remove not existing columns from the partition values
    */
-  def updateInputPartitionValues[T <: SubFeed](dataObject: DataObject, subFeed: T)(implicit session: SparkSession, context: ActionPipelineContext): T =
+  def updateInputPartitionValues[T <: SubFeed](dataObject: DataObject, subFeed: T)(implicit session: SparkSession, context: ActionPipelineContext): T = {
     dataObject match {
       case partitionedDO: CanHandlePartitions =>
         // remove superfluous partitionValues
         subFeed.updatePartitionValues(partitionedDO.partitions, Some(subFeed.partitionValues)).asInstanceOf[T]
-      case _ => subFeed.clearPartitionValues().asInstanceOf[T]
+      case _ => subFeed.clearPartitionValues.asInstanceOf[T]
     }
+  }
 
   /**
    * Updates the partition values of a SubFeed to the partition columns of the given output data object:
@@ -168,7 +169,7 @@ private[smartdatalake] object ActionHelper extends SmartDataLakeLogger {
    * - add run_id_partition value if needed
    * - removing not existing columns from the partition values.
    */
-  def updateOutputPartitionValues[T <: SubFeed](dataObject: DataObject, subFeed: T, partitionValuesTransform: Option[Seq[PartitionValues] => Map[PartitionValues,PartitionValues]] = None)(implicit session: SparkSession, context: ActionPipelineContext): T =
+  def updateOutputPartitionValues[T <: SubFeed](dataObject: DataObject, subFeed: T, partitionValuesTransform: Option[Seq[PartitionValues] => Map[PartitionValues,PartitionValues]] = None)(implicit session: SparkSession, context: ActionPipelineContext): T = {
     dataObject match {
       case partitionedDO: CanHandlePartitions =>
         // transform partition values
@@ -181,7 +182,8 @@ private[smartdatalake] object ActionHelper extends SmartDataLakeLogger {
         }
         // remove superfluous partitionValues
         subFeed.updatePartitionValues(partitionedDO.partitions, Some(newPartitionValues)).asInstanceOf[T]
-      case _ => subFeed.clearPartitionValues().asInstanceOf[T]
+      case _ => subFeed.clearPartitionValues.asInstanceOf[T]
     }
+  }
 }
 
