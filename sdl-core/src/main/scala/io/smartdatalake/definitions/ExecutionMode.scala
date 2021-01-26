@@ -172,14 +172,16 @@ case class PartitionDiffMode( partitionColNb: Option[Int] = None
               // calculate missing partition values
               val filteredInputPartitionValues = partitionInput.listPartitions.map(_.filterKeys(inputPartitions))
               val filteredOutputPartitionValues = partitionOutput.listPartitions.map(_.filterKeys(outputPartitions))
-              val inputOutputPartitionValuesMap = if (applyPartitionValuesTransform) partitionValuesTransform(filteredInputPartitionValues) else PartitionValues.oneToOneMapping(filteredInputPartitionValues) // normally this transformation is 1:1, but it can be implemented in custom transformations for aggregations
+              val inputOutputPartitionValuesMap = if (applyPartitionValuesTransform) {
+                partitionValuesTransform(filteredInputPartitionValues).mapValues(_.filterKeys(outputPartitions))
+              } else PartitionValues.oneToOneMapping(filteredInputPartitionValues) // normally this transformation is 1:1, but it can be implemented in custom transformations for aggregations
               val outputInputPartitionValuesMap = inputOutputPartitionValuesMap.toSeq.map{ case (k,v) => (v,k)}.groupBy(_._1).mapValues(_.map(_._2))
               val outputPartitionValuesToBeProcessed = inputOutputPartitionValuesMap.values.toSet.diff(filteredOutputPartitionValues.toSet).toSeq
               // sort and limit number of partitions processed
-              val ordering = PartitionValues.getOrdering(outputPartitions)
+              val outputOrdering = PartitionValues.getOrdering(outputPartitions)
               var selectedOutputPartitionValues = nbOfPartitionValuesPerRun match {
-                case Some(n) => outputPartitionValuesToBeProcessed.sorted(ordering).take(n)
-                case None => outputPartitionValuesToBeProcessed.sorted(ordering)
+                case Some(n) => outputPartitionValuesToBeProcessed.sorted(outputOrdering).take(n)
+                case None => outputPartitionValuesToBeProcessed.sorted(outputOrdering)
               }
               // apply optional select expression
               var data = PartitionDiffModeExpressionData.from(context).copy(givenPartitionValues = subFeed.partitionValues.map(_.getMapString), inputPartitionValues = filteredInputPartitionValues.map(_.getMapString), outputPartitionValues = filteredOutputPartitionValues.map(_.getMapString), selectedPartitionValues = selectedOutputPartitionValues.map(_.getMapString))
@@ -187,9 +189,11 @@ case class PartitionDiffMode( partitionColNb: Option[Int] = None
                 SparkExpressionUtil.evaluate[PartitionDiffModeExpressionData, Seq[Map[String, String]]](actionId, Some("selectExpression"), selectExpression.get, data)
                   .map(_.map(PartitionValues(_)))
                   .getOrElse(selectedOutputPartitionValues)
+                  .sorted(outputOrdering)
               } else selectedOutputPartitionValues
               data = data.copy(selectedPartitionValues = selectedOutputPartitionValues.map(_.getMapString))
               // reverse lookup input partitions as selection of output partitions might have changed
+              val inputOrdering = PartitionValues.getOrdering(inputPartitions)
               var selectedInputPartitionValues = selectedOutputPartitionValues.flatMap(outputInputPartitionValuesMap)
               data = data.copy(selectedInputPartitionValues = selectedInputPartitionValues.map(_.getMapString))
               // apply optional select additional input partitions expression
@@ -197,7 +201,8 @@ case class PartitionDiffMode( partitionColNb: Option[Int] = None
                 SparkExpressionUtil.evaluate[PartitionDiffModeExpressionData, Seq[Map[String, String]]](actionId, Some("selectAdditionalInputExpression"), selectAdditionalInputExpression.get, data)
                   .map(_.map(PartitionValues(_)))
                   .getOrElse(selectedInputPartitionValues)
-              } else selectedInputPartitionValues
+                  .sorted(inputOrdering)
+              } else selectedInputPartitionValues.sorted(inputOrdering)
               data = data.copy(selectedInputPartitionValues = selectedInputPartitionValues.map(_.getMapString))
               // evaluate fail conditions
               evaluateFailConditions(actionId, data) // throws exception on failed condition
